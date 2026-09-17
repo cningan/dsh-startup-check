@@ -1,0 +1,13 @@
+# Normalize line endings on checkout/commit so the repository stays LF-only,
+# while Windows tooling (PowerShell, cmd) still gets CRLF working copies.
+* text=auto eol=lf
+
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Binary
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary

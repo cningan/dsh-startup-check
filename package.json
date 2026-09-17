@@ -1,0 +1,75 @@
+{
+  "name": "dsh-startup-check",
+  "version": "0.4.0",
+  "description": "Pre-flight check for a DeepSeek Harness profile's plugin tree: static checks (syntax, package structure, patch references, config-tree assembly) plus optional real-boot smoke (isolated `dsh web` instance) and page-side smoke (headless Edge over CDP), with instance-shutdown confirmation and stray-instance audit. Provides the model-facing `plugin_check` tool and bundles the `plugin-fault-diagnosis` skill.",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "deepseek",
+    "cordis",
+    "plugin",
+    "preflight",
+    "smoke-test",
+    "diagnostics"
+  ],
+  "license": "MIT",
+  "author": "cningan",
+  "type": "module",
+  "main": "./lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/",
+    "assets/",
+    "docs/",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "LICENSE.zh.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cningan/dsh-startup-check.git"
+  },
+  "homepage": "https://github.com/cningan/dsh-startup-check#readme",
+  "bugs": {
+    "url": "https://github.com/cningan/dsh-startup-check/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "os": [
+    "win32"
+  ],
+  "scripts": {
+    "test": "node --check lib/index.js && node --check lib/smoke.js && node --check lib/page-smoke.js && node --check lib/instances.js && node test/tool-body-selftest.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh": ">=0.1.0",
+    "@deepseek-ai/dsh-skill": ">=0.1.0",
+    "@deepseek-ai/dsh-tools": ">=0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-skill": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-tools": {
+      "optional": true
+    }
+  }
+}

@@ -1,0 +1,13 @@
+# The published tarball is limited by package.json "files".
+# This file only narrows it further: development-only material that would
+# otherwise be pulled in defensively.
+.github/
+test/
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+CODE_OF_CONDUCT.zh.md
+SECURITY.md
+.npmignore
+.gitignore
+.gitattributes
+.editorconfig

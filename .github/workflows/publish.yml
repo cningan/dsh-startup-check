@@ -1,0 +1,48 @@
+name: Publish to npm
+
+# Publishing is triggered by a version tag, e.g.:
+#   npm version patch        # bumps package.json + creates the commit and tag
+#   git push --follow-tags
+#
+# Authentication uses npm Trusted Publishing (OIDC) — no NPM_TOKEN secret is
+# stored in this repository. One-time setup on npmjs.com, on the package's
+# Settings → Trusted Publisher page:
+#   Publisher: GitHub Actions
+#   Organization or user: cningan
+#   Repository: dsh-startup-check
+#   Workflow filename: publish.yml
+#   Environment: npm-publish   (optional but recommended)
+# Until that is configured, this workflow cannot authenticate — publish
+# manually with `npm publish` in the meantime.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: publish
+    runs-on: windows-latest
+    environment: npm-publish
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Test
+        run: npm test
+
+      - name: Publish
+        run: npm publish --provenance --access public

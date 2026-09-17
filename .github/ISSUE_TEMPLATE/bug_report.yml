@@ -1,0 +1,76 @@
+name: Bug report
+description: Something is wrong with plugin_check or the bundled skill.
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. The fastest way to a fix is a reproduction we can run.
+
+        Before filing: restart the harness and re-run the check. A running harness serves
+        the code it booted with, so an install or edit is not visible until the restart.
+
+  - type: input
+    id: plugin-version
+    attributes:
+      label: dsh-startup-check version
+      description: From the installed package.json, or `npm ls dsh-startup-check`.
+      placeholder: '0.4.0'
+    validations:
+      required: true
+
+  - type: input
+    id: dsh-version
+    attributes:
+      label: DeepSeek Harness version
+      description: Output of `dsh --version`.
+      placeholder: '0.1.5-rc.1'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: windows
+    attributes:
+      label: Operating system
+      options:
+        - Windows 11
+        - Windows 10
+        - Other (this plugin is Windows-only today)
+    validations:
+      required: true
+
+  - type: textarea
+    id: call
+    attributes:
+      label: The exact tool call
+      description: The arguments you passed to plugin_check.
+      render: json
+      placeholder: '{ "live": true }'
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: The output you got
+      description: The full `{ ok, checks }` result, or the error text.
+      render: json
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: |
+        Relevant context: which plugins are installed, whether the isolated instance
+        printed a `dsh web:` URL, whether a stray instance was reported, harness logs.
+    validations:
+      required: false

@@ -1,0 +1,14 @@
+# dsh-startup-check — DSH bundle patch layer.
+#
+# `dsh plugin --profile <name> add dsh-startup-check` installs this package into
+# the profile and, because package.json declares `dsh.bundle.patch`, appends it
+# to `dsh.profile.bundles`. The loader then applies this patch after every bundle
+# layer and mounts the plugin by package name — resolved from the profile's own
+# pnpm-managed node_modules, so no path is hard-coded here.
+#
+# Publishing side effects: none. The plugin only registers the `plugin_check`
+# tool and the bundled `plugin-fault-diagnosis` skill; it writes no profile file.
+
+- insert:
+    - id: startup-check
+      name: 'dsh-startup-check'
