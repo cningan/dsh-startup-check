@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
-## [0.4.0] - 2026-09-11
+## [0.4.0] - 2026-09-17
 
 First public release. Before this, the plugin lived only inside a private
 harness profile, so this entry summarizes the state it was published at.
@@ -40,6 +40,9 @@ harness profile, so this entry summarizes the state it was published at.
   Edge/Chrome over CDP.
 - The static checks target the `web` profile's `@local` plugin layout
   (`~/.dsh/profiles/web/plugins/**`).
+- Documentation: bilingual README with a rendered banner and a before/after
+  diagram (`assets/*.svg`), plus `docs/architecture.md` and its Chinese mirror.
+  Every path is relative, so the images also render on the npm package page.
 
 [Unreleased]: https://github.com/cningan/dsh-startup-check/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/cningan/dsh-startup-check/releases/tag/v0.4.0

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="1200" height="320" role="img" aria-label="Without the check versus with the check">
+  <defs>
+    <style>
+      .t { font-family: "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif; }
+      .m { font-family: "Cascadia Code", "JetBrains Mono", Consolas, "SFMono-Regular", Menlo, monospace; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="320" fill="#0d1117"/>
+
+  <!-- left panel: without -->
+  <rect x="28" y="30" width="556" height="260" rx="14" fill="#140f10" stroke="#4d2226"/>
+  <rect x="28" y="30" width="556" height="38" rx="14" fill="#1c1416"/>
+  <rect x="28" y="54" width="556" height="14" fill="#1c1416"/>
+  <text x="52" y="55" class="t" font-size="15" fill="#f85149" font-weight="600">✗  without the check</text>
+
+  <rect x="52" y="92" width="508" height="172" rx="8" fill="#0b1017" stroke="#30363d"/>
+  <g class="m" font-size="14.5">
+    <text x="70" y="122" fill="#6e7681">$</text>
+    <text x="88" y="122" fill="#c9d1d9">dsh web</text>
+    <text x="70" y="150" fill="#8b949e">installing plugin … ok</text>
+    <text x="70" y="178" fill="#8b949e">restarting …</text>
+    <text x="70" y="206" fill="#f85149">✗ harness failed to open</text>
+    <text x="70" y="234" fill="#6e7681">no page, no clue, no dsh to ask</text>
+  </g>
+
+  <!-- arrow -->
+  <g>
+    <path d="M596 160h18" stroke="#30363d" stroke-width="2"/>
+    <path d="M604 150l12 10-12 10" fill="none" stroke="#30363d" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  </g>
+
+  <!-- right panel: with -->
+  <rect x="620" y="30" width="552" height="260" rx="14" fill="#0c1a12" stroke="#238636"/>
+  <rect x="620" y="30" width="552" height="38" rx="14" fill="#0f2117"/>
+  <rect x="620" y="54" width="552" height="14" fill="#0f2117"/>
+  <text x="644" y="55" class="t" font-size="15" fill="#3fb950" font-weight="600">✓  with dsh-startup-check</text>
+
+  <rect x="644" y="92" width="504" height="172" rx="8" fill="#0b1017" stroke="#30363d"/>
+  <g class="m" font-size="14.5">
+    <text x="662" y="122" fill="#6e7681">$</text>
+    <text x="680" y="122" fill="#c9d1d9">plugin_check</text>
+    <text x="662" y="150" fill="#3fb950">✓ 4 static checks passed</text>
+    <text x="662" y="176" fill="#3fb950">✓ isolated instance booted</text>
+    <text x="662" y="202" fill="#3fb950">✓ instance really exited</text>
+    <text x="662" y="228" fill="#6e7681">—</text>
+    <text x="680" y="228" fill="#8b949e">safe to restart</text>
+    <text x="662" y="252" fill="#f85149" font-size="13.5">✗ bad plugin → named + detail, before the restart</text>
+  </g>
+</svg>

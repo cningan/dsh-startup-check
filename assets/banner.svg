@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" width="1200" height="340" role="img" aria-label="dsh-startup-check — catch a broken plugin before the restart">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="0.55" stop-color="#0f1723"/>
+      <stop offset="1" stop-color="#0b1a17"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#3fb950" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#3fb950" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3fb950" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#3fb950" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#58a6ff" stop-opacity="0"/>
+    </linearGradient>
+    <style>
+      .t  { font-family: "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif; }
+      .m  { font-family: "Cascadia Code", "JetBrains Mono", Consolas, "SFMono-Regular", Menlo, monospace; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="340" fill="url(#bg)"/>
+  <ellipse cx="980" cy="60" rx="360" ry="220" fill="url(#glow)"/>
+
+  <!-- grid texture -->
+  <g stroke="#8b949e" stroke-opacity="0.055" stroke-width="1">
+    <path d="M0 40H1200M0 80H1200M0 120H1200M0 160H1200M0 200H1200M0 240H1200M0 280H1200M0 320H1200"/>
+    <path d="M40 0V340M120 0V340M200 0V340M280 0V340M360 0V340M440 0V340M520 0V340M600 0V340M680 0V340M760 0V340M840 0V340M920 0V340M1000 0V340M1080 0V340M1160 0V340"/>
+  </g>
+
+  <!-- terminal window -->
+  <rect x="70" y="52" width="1060" height="236" rx="16" fill="#161b22" fill-opacity="0.92" stroke="#30363d"/>
+  <path d="M70 68a16 16 0 0 1 16-16h1028a16 16 0 0 1 16 16v22H70z" fill="#1c2430"/>
+  <circle cx="98" cy="71" r="6" fill="#ff5f57"/>
+  <circle cx="120" cy="71" r="6" fill="#febc2e"/>
+  <circle cx="142" cy="71" r="6" fill="#28c840"/>
+  <text x="1092" y="77" class="m" font-size="13" fill="#6e7681" text-anchor="end">~/ .dsh/profiles/web</text>
+
+  <text x="104" y="144" class="m" font-size="27" font-weight="700" fill="#e6edf3">dsh-startup-check</text>
+
+  <text x="104" y="186" class="t" font-size="20" fill="#8b949e">catch a broken plugin</text>
+  <text x="414" y="186" class="t" font-size="20" fill="#c9d1d9" font-weight="600">before</text>
+  <text x="500" y="186" class="t" font-size="20" fill="#8b949e">the restart</text>
+
+  <rect x="104" y="210" width="440" height="46" rx="9" fill="#0b1017" stroke="#30363d"/>
+  <g class="m" font-size="14.5">
+    <text x="122" y="239" fill="#6e7681">$</text>
+    <text x="142" y="239" fill="#58a6ff">dsh plugin add</text>
+    <text x="278" y="239" fill="#3fb950">dsh-startup-check</text>
+  </g>
+  <text x="568" y="239" class="t" font-size="13" fill="#6e7681">install once</text>
+
+  <!-- state pills -->
+  <g class="m" font-size="13">
+    <rect x="790" y="108" width="312" height="34" rx="17" fill="#0d1b12" stroke="#238636"/>
+    <text x="814" y="130" fill="#3fb950">✓</text>
+    <text x="838" y="130" fill="#c9d1d9">checks run before restart</text>
+
+    <rect x="790" y="154" width="312" height="34" rx="17" fill="#0d1621" stroke="#1f6feb"/>
+    <text x="814" y="176" fill="#58a6ff">◆</text>
+    <text x="838" y="176" fill="#c9d1d9">read-only · never kills a host</text>
+
+    <rect x="790" y="200" width="312" height="34" rx="17" fill="#1b140d" stroke="#9e6a03"/>
+    <text x="814" y="222" fill="#d29922">▮</text>
+    <text x="838" y="222" fill="#c9d1d9">isolated instance · verified exit</text>
+  </g>
+
+  <rect x="70" y="312" width="1060" height="2" rx="1" fill="url(#rule)"/>
+</svg>
