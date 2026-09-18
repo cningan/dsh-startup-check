@@ -78,6 +78,39 @@ would write to the checked profile, kill a resident harness host, or match
 processes by anything other than process identity will be rejected — those are
 the design's safety guarantees, not implementation details.
 
+## Releasing (maintainers)
+
+Two paths, both already wired up:
+
+**CI, preferred.** The package is set up for
+[npm trusted publishing](https://docs.npmjs.com/trusted-publishers): the npm
+package's Settings → Trusted Publisher points at this repository, this workflow
+file (`publish.yml`) and the `npm-publish` environment. Then a release is just
+
+```bash
+npm version patch        # or minor / major — commits and tags
+git push --follow-tags   # the v* tag triggers .github/workflows/publish.yml
+```
+
+No token is stored anywhere, and the publish carries a provenance attestation.
+
+**Locally, when CI cannot be configured yet.** `scripts/publish-dsh-startup-check.ps1`
+walks a maintainer through it interactively: name-availability check, registry
+note, `npm login` (which needs the maintainer's own password and 2FA code),
+`npm publish --dry-run` review, tag push, and the publish itself behind a typed
+confirmation. Run it from the repository root:
+
+```powershell
+pwsh -File scripts\publish-dsh-startup-check.ps1
+```
+
+One thing to know if publishing ever stalls with every security-sensitive write
+rejected: npm places a **72-hour hold on any account that signs in with a
+recovery code**, during which publish and token creation are paused (sign-in,
+browsing and installs keep working). It expires on its own; wait it out rather
+than retrying, and see
+[the npm changelog](https://github.blog/changelog/2026-09-09-npm-extends-recovery-code-security-holds-to-all-accounts/).
+
 ## License
 
 By contributing, you agree that your contributions are licensed under the

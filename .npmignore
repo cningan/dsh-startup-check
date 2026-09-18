@@ -3,6 +3,7 @@
 # otherwise be pulled in defensively.
 .github/
 test/
+scripts/
 CONTRIBUTING.md
 CODE_OF_CONDUCT.md
 CODE_OF_CONDUCT.zh.md
