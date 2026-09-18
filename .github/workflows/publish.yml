@@ -23,9 +23,17 @@ name: Publish to npm
 #        gh variable set NPM_TRUSTED_PUBLISHER_READY --body true \
 #          --repo cningan/dsh-startup-check
 #
-# Until both hold, publishing from a tag is switched off on purpose: a tag push
-# that is guaranteed to fail only teaches everyone to ignore a red X. Release
-# locally in the meantime.
+#   3. The npm CLI doing the publish must be version 11.5.1 or newer — it is the
+#      first version with OIDC support. This one is easy to get wrong because
+#      the Node 22 line still ships npm 10: Node 22.23.2 bundles npm 10.9.8, so
+#      the workflow looks healthy, signs a provenance statement, and then sends
+#      the publish *unauthenticated* — which the registry answers with a bare
+#      `404 Not Found - PUT ...` that mentions nothing about authentication.
+#      Hence node-version: '24' below (npm 11.19) and the assertion step.
+#
+# Until all three hold, publishing from a tag is switched off on purpose: a tag
+# push that is guaranteed to fail only teaches everyone to ignore a red X.
+# Release locally in the meantime.
 #
 # After bootstrapping, a release is:
 #   npm version patch        # bumps package.json + creates the commit and tag
@@ -51,7 +59,7 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: '22'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
 
       # A tag push still verifies the release (same checks CI runs on main), so a
@@ -71,18 +79,23 @@ jobs:
           echo "repository variable NPM_TRUSTED_PUBLISHER_READY must be 'true'."
           echo "See the header of this file and CONTRIBUTING.md → Releasing."
 
-      # The npm CLI deliberately swallows OIDC failures at the default log level
-      # and lets the publish fall through to whatever other credentials exist,
-      # which surfaces as a bare `404 Not Found - PUT ...` with no explanation.
-      # --loglevel=verbose makes it print why the token exchange did not happen.
-      - name: Where is the token coming from
+      # Fail loudly instead of 404-ing mysteriously: without an OIDC-capable
+      # npm the publish goes out anonymous and the registry says only
+      # "404 Not Found - PUT ...", which reads like a missing package.
+      - name: Assert npm can do OIDC
         if: vars.NPM_TRUSTED_PUBLISHER_READY == 'true'
+        shell: pwsh
         run: |
-          npm --version
-          node --version
-          echo "id-token request URL is set: $([bool]$env:ACTIONS_ID_TOKEN_REQUEST_URL)"
-          echo "id-token request token is set: $([bool]$env:ACTIONS_ID_TOKEN_REQUEST_TOKEN)"
+          $npmVersion = (npm --version).Trim()
+          Write-Host "node $(node --version) / npm $npmVersion"
+          if ([version]$npmVersion -lt [version]'11.5.1') {
+            Write-Error ("npm $npmVersion is older than 11.5.1, so it cannot exchange an OIDC token. " +
+              "Trusted publishing would be skipped and the publish would fail with a bare 404.")
+            exit 1
+          }
 
+      # --loglevel=verbose is deliberate: the npm CLI swallows OIDC failures at
+      # the default level, so a rejected token exchange is otherwise invisible.
       - name: Publish
         if: vars.NPM_TRUSTED_PUBLISHER_READY == 'true'
         run: npm publish --provenance --access public --loglevel=verbose
