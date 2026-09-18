@@ -9,14 +9,17 @@ name: Publish to npm
 #      `404 Not Found - PUT https://registry.npmjs.org/dsh-startup-check`.
 #
 #   2. The repository variable NPM_TRUSTED_PUBLISHER_READY must be "true".
-#      Set it once npm's Settings → Trusted Publisher page for this package
-#      contains:
-#        Publisher:            GitHub Actions
-#        Organization or user: cningan
-#        Repository:           dsh-startup-check
-#        Workflow filename:    publish.yml
-#        Environment:          npm-publish
-#      then:
+#      The relationship itself is created from the CLI — no need to open
+#      npmjs.com, whose web UI may be unreachable from behind a blocked network:
+#
+#        npm trust github dsh-startup-check \
+#          --file publish.yml \
+#          --repo cningan/dsh-startup-check \
+#          --env npm-publish \
+#          --registry https://registry.npmjs.org/
+#
+#      …then arm this workflow:
+#
 #        gh variable set NPM_TRUSTED_PUBLISHER_READY --body true \
 #          --repo cningan/dsh-startup-check
 #
@@ -44,28 +47,29 @@ jobs:
     runs-on: windows-latest
     environment: npm-publish
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
+
+      # A tag push still verifies the release (same checks CI runs on main), so a
+      # tag is never a no-op — it just does not attempt to publish until the
+      # package exists and trusted publishing is armed.
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Test
+        run: npm test
 
       - name: Explain the gate
         if: vars.NPM_TRUSTED_PUBLISHER_READY != 'true'
         run: |
           echo "::notice title=Publish skipped::Trusted publishing is not armed yet."
-          echo "The package must exist on npm and the repository variable"
-          echo "NPM_TRUSTED_PUBLISHER_READY must be 'true' before a tag can publish."
+          echo "The package must exist on npm (first publish is done locally) and the"
+          echo "repository variable NPM_TRUSTED_PUBLISHER_READY must be 'true'."
           echo "See the header of this file and CONTRIBUTING.md → Releasing."
-
-      - name: Install dependencies
-        if: vars.NPM_TRUSTED_PUBLISHER_READY == 'true'
-        run: npm install --no-audit --no-fund
-
-      - name: Test
-        if: vars.NPM_TRUSTED_PUBLISHER_READY == 'true'
-        run: npm test
 
       - name: Publish
         if: vars.NPM_TRUSTED_PUBLISHER_READY == 'true'

@@ -101,17 +101,19 @@ because there was nothing to publish to yet.
 
 ### Then: arm CI, and let tags do the rest
 
-On npm, open the package's Settings → Trusted Publisher and fill in:
+Create the trusted relationship from the CLI — npmjs.com's web UI is not
+required, which matters when your network cannot reach it:
 
-| Field | Value |
-|---|---|
-| Publisher | GitHub Actions |
-| Organization or user | `cningan` |
-| Repository | `dsh-startup-check` |
-| Workflow filename | `publish.yml` |
-| Environment | `npm-publish` |
+```bash
+npm trust github dsh-startup-check \
+  --file publish.yml \
+  --repo cningan/dsh-startup-check \
+  --env npm-publish \
+  --registry https://registry.npmjs.org/
+```
 
-Then tell the workflow it may publish:
+(`npm trust github --help` lists the flags; `--dry-run` shows what it would
+create.) Then tell the workflow it may publish:
 
 ```bash
 gh variable set NPM_TRUSTED_PUBLISHER_READY --body true --repo cningan/dsh-startup-check
@@ -125,8 +127,8 @@ git push --follow-tags   # the v* tag triggers .github/workflows/publish.yml
 ```
 
 No token is stored anywhere, and the publish carries a provenance attestation.
-Until `NPM_TRUSTED_PUBLISHER_READY` is `true`, the workflow skips publishing on
-purpose (with a notice explaining why) rather than failing on every tag.
+Until `NPM_TRUSTED_PUBLISHER_READY` is `true`, a tag still runs the tests but
+skips publishing with a notice, instead of failing on every tag.
 
 ### If a publish stalls
 
