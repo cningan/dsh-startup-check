@@ -1,19 +1,32 @@
 name: Publish to npm
 
-# Publishing is triggered by a version tag, e.g.:
+# Two things gate this workflow, and both must be true before a release:
+#
+#   1. The package must already exist on npm. Trusted publishing can only
+#      authenticate a package that a maintainer has already created — a very
+#      first publish has to be done locally (see CONTRIBUTING.md → Releasing).
+#      Verified the hard way: the first tag push reached the registry and got
+#      `404 Not Found - PUT https://registry.npmjs.org/dsh-startup-check`.
+#
+#   2. The repository variable NPM_TRUSTED_PUBLISHER_READY must be "true".
+#      Set it once npm's Settings → Trusted Publisher page for this package
+#      contains:
+#        Publisher:            GitHub Actions
+#        Organization or user: cningan
+#        Repository:           dsh-startup-check
+#        Workflow filename:    publish.yml
+#        Environment:          npm-publish
+#      then:
+#        gh variable set NPM_TRUSTED_PUBLISHER_READY --body true \
+#          --repo cningan/dsh-startup-check
+#
+# Until both hold, publishing from a tag is switched off on purpose: a tag push
+# that is guaranteed to fail only teaches everyone to ignore a red X. Release
+# locally in the meantime.
+#
+# After bootstrapping, a release is:
 #   npm version patch        # bumps package.json + creates the commit and tag
 #   git push --follow-tags
-#
-# Authentication uses npm Trusted Publishing (OIDC) — no NPM_TOKEN secret is
-# stored in this repository. One-time setup on npmjs.com, on the package's
-# Settings → Trusted Publisher page:
-#   Publisher: GitHub Actions
-#   Organization or user: cningan
-#   Repository: dsh-startup-check
-#   Workflow filename: publish.yml
-#   Environment: npm-publish   (optional but recommended)
-# Until that is configured, this workflow cannot authenticate — publish
-# manually with `npm publish` in the meantime.
 
 on:
   push:
@@ -38,11 +51,22 @@ jobs:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Explain the gate
+        if: vars.NPM_TRUSTED_PUBLISHER_READY != 'true'
+        run: |
+          echo "::notice title=Publish skipped::Trusted publishing is not armed yet."
+          echo "The package must exist on npm and the repository variable"
+          echo "NPM_TRUSTED_PUBLISHER_READY must be 'true' before a tag can publish."
+          echo "See the header of this file and CONTRIBUTING.md → Releasing."
+
       - name: Install dependencies
+        if: vars.NPM_TRUSTED_PUBLISHER_READY == 'true'
         run: npm install --no-audit --no-fund
 
       - name: Test
+        if: vars.NPM_TRUSTED_PUBLISHER_READY == 'true'
         run: npm test
 
       - name: Publish
+        if: vars.NPM_TRUSTED_PUBLISHER_READY == 'true'
         run: npm publish --provenance --access public
