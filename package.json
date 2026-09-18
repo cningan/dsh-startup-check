@@ -1,6 +1,6 @@
 {
   "name": "dsh-startup-check",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Pre-flight check for a DeepSeek Harness profile's plugin tree: static checks (syntax, package structure, patch references, config-tree assembly) plus optional real-boot smoke (isolated `dsh web` instance) and page-side smoke (headless Edge over CDP), with instance-shutdown confirmation and stray-instance audit. Provides the model-facing `plugin_check` tool and bundles the `plugin-fault-diagnosis` skill.",
   "keywords": [
     "dsh",
