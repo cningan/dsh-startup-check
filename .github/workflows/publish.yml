@@ -71,6 +71,18 @@ jobs:
           echo "repository variable NPM_TRUSTED_PUBLISHER_READY must be 'true'."
           echo "See the header of this file and CONTRIBUTING.md → Releasing."
 
+      # The npm CLI deliberately swallows OIDC failures at the default log level
+      # and lets the publish fall through to whatever other credentials exist,
+      # which surfaces as a bare `404 Not Found - PUT ...` with no explanation.
+      # --loglevel=verbose makes it print why the token exchange did not happen.
+      - name: Where is the token coming from
+        if: vars.NPM_TRUSTED_PUBLISHER_READY == 'true'
+        run: |
+          npm --version
+          node --version
+          echo "id-token request URL is set: $([bool]$env:ACTIONS_ID_TOKEN_REQUEST_URL)"
+          echo "id-token request token is set: $([bool]$env:ACTIONS_ID_TOKEN_REQUEST_TOKEN)"
+
       - name: Publish
         if: vars.NPM_TRUSTED_PUBLISHER_READY == 'true'
-        run: npm publish --provenance --access public
+        run: npm publish --provenance --access public --loglevel=verbose
