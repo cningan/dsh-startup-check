@@ -7,7 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed
+
+- README (both languages): document that the published package carries a signed
+  provenance attestation, and link the badge to the registry's attestation
+  endpoint.
+
+## [0.4.3] - 2026-09-18
+
+First release published by CI, and the first with a signed provenance
+attestation. `plugin_check` itself is unchanged — everything in this release is
+about how the package is produced and shipped.
+
+### Added
+
+- `scripts/publish-dsh-startup-check.ps1`: an interactive maintainer wizard for
+  the one publish only a human can perform (the first one), from a
+  name-availability check through a `--dry-run` review to a typed `PUBLISH`
+  confirmation.
+- A tag-driven publish workflow using npm trusted publishing (OIDC), so no
+  long-lived token is stored in the repository, gated behind the
+  `NPM_TRUSTED_PUBLISHER_READY` repository variable.
+- `CONTRIBUTING.md`: a Releasing section recording the three conditions a tag
+  needs, each stated with the symptom it produces when missing.
+
+### Fixed
+
+- The publish job ran on Node 22, whose bundled npm (10.9.8) predates OIDC
+  support (npm 11.5.1). The publish went out unauthenticated and failed with a
+  bare `404 Not Found - PUT` that never mentioned authentication. The job now
+  runs Node 24 and asserts the npm version before publishing.
 
 ## [0.4.0] - 2026-09-17
 

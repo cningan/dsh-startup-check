@@ -10,6 +10,7 @@
 
 [![CI](https://github.com/cningan/dsh-startup-check/actions/workflows/ci.yml/badge.svg)](https://github.com/cningan/dsh-startup-check/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/dsh-startup-check?color=3fb950&label=npm)](https://www.npmjs.com/package/dsh-startup-check)
+[![provenance](https://img.shields.io/badge/provenance-signed-3fb950)](https://registry.npmjs.org/-/npm/v1/attestations/dsh-startup-check@0.4.3)
 [![node](https://img.shields.io/badge/node-%E2%89%A522-3fb950)](package.json)
 [![platform](https://img.shields.io/badge/platform-Windows-0078d4)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-3fb950)](LICENSE)
@@ -92,6 +93,12 @@ dsh plugin --profile web add dsh-startup-check
 
 Then **restart the harness** — installing a plugin changes `dsh.profile.bundles`, which is read
 at boot. That is the last leap of faith you take.
+
+The npm package is published by GitHub Actions with a signed **provenance** attestation, so
+anyone who installs it can verify that this tarball was built from this repository at a
+particular commit, rather than uploaded by hand from someone's machine. Follow the badge, or
+read the [attestation](https://registry.npmjs.org/-/npm/v1/attestations/dsh-startup-check@0.4.3)
+directly.
 
 ```bash
 plugin_check                          # static checks (fast)

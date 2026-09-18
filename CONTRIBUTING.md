@@ -80,55 +80,96 @@ the design's safety guarantees, not implementation details.
 
 ## Releasing (maintainers)
 
-### First, once: bootstrap the package locally
+Three things have to hold before a tag can publish itself. Each one was learned
+by hitting it, so they are stated with the symptom they produce.
+
+### 0. npm CLI 11.5.1 or newer, in both places
+
+OIDC token exchange only exists from npm **11.5.1**. Two traps:
+
+- **In CI**: the Node 22 line still bundles npm 10 (Node 22.23.2 ships npm
+  10.9.8). The workflow pins `node-version: '24'`, which bundles npm 11.19, and
+  asserts the version before publishing.
+- **On your machine**: with an older npm, `npm trust github` silently omits the
+  permission list — the relationship is created, `npm trust list` shows the
+  claims, and publishing still fails. Upgrade with `npm install -g npm@11.19.1`.
+
+What it looks like when this is wrong: the run signs a provenance statement,
+then dies on
+
+```text
+npm error 404 Not Found - PUT https://registry.npmjs.org/dsh-startup-check
+```
+
+The publish went out **unauthenticated**; the registry's anonymous answer is a
+bare 404 that never mentions authentication. `--loglevel=verbose` is what
+finally exposed it, by printing `npm verbose npm v10.9.8`.
+
+### 1. Bootstrap the package locally, once
 
 Trusted publishing can only authenticate a package that **already exists** on
-npm. A first publish must therefore come from a maintainer's machine:
+npm, so the first publish comes from a maintainer's machine:
 
 ```powershell
 pwsh -File scripts\publish-dsh-startup-check.ps1
 ```
 
 The script walks it interactively: name-availability check, a registry note,
-`npm login --auth-type=legacy` (needs the maintainer's own password and 2FA
-code; the legacy flow talks to the registry instead of opening npmjs.com), a
-`npm publish --dry-run` review, the version tag, and the publish itself behind a
-typed `PUBLISH` confirmation. It stops at every stage and stores no credential.
+`npm login --auth-type=legacy` (needs your own password and second factor; the
+legacy flow talks to the registry instead of opening npmjs.com), a
+`npm publish --dry-run` review, the version tag, and the publish behind a typed
+`PUBLISH` confirmation. It stops at every stage and stores no credential.
 
-This step is not optional decoration: the first tag push reached the registry
-and was rejected with `404 Not Found - PUT https://registry.npmjs.org/dsh-startup-check`,
-because there was nothing to publish to yet.
-
-### Then: arm CI, and let tags do the rest
-
-Create the trusted relationship from the CLI — npmjs.com's web UI is not
-required, which matters when your network cannot reach it:
+### 2. Create the trusted relationship, **with** the publish permission
 
 ```bash
 npm trust github dsh-startup-check \
   --file publish.yml \
   --repo cningan/dsh-startup-check \
   --env npm-publish \
+  --allow-publish \
   --registry https://registry.npmjs.org/
 ```
 
-(`npm trust github --help` lists the flags; `--dry-run` shows what it would
-create.) Then tell the workflow it may publish:
+`--allow-publish` is the part that matters. Without it the relationship exists
+but carries no permissions, and publishing is refused. Verify what actually
+landed on the server — the output must contain a `permissions:` line:
+
+```bash
+npm trust list dsh-startup-check --registry https://registry.npmjs.org/
+```
+
+```text
+type: github
+id: …
+file: publish.yml
+repository: cningan/dsh-startup-check
+environment: npm-publish
+permissions: publish, stage publish      ← required
+```
+
+Two gotchas worth knowing: npm does not validate the configuration when you save
+it (its own docs say errors appear only at publish time), and a duplicate
+relationship is rejected with `409 Conflict — a trusted publisher configuration
+that a token could also match already exists` — delete the old one, then retry.
+
+Then arm the workflow:
 
 ```bash
 gh variable set NPM_TRUSTED_PUBLISHER_READY --body true --repo cningan/dsh-startup-check
 ```
 
-From then on a release is just
+### From then on
 
 ```bash
 npm version patch        # or minor / major — commits and tags
 git push --follow-tags   # the v* tag triggers .github/workflows/publish.yml
 ```
 
-No token is stored anywhere, and the publish carries a provenance attestation.
-Until `NPM_TRUSTED_PUBLISHER_READY` is `true`, a tag still runs the tests but
-skips publishing with a notice, instead of failing on every tag.
+No token is stored anywhere, and the publish carries a provenance attestation
+(verify with `npm view dsh-startup-check@<version> dist.attestations`). Until
+`NPM_TRUSTED_PUBLISHER_READY` is `true`, a tag still runs the tests but skips
+publishing with a notice, instead of failing on every tag.
 
 ### If a publish stalls
 
