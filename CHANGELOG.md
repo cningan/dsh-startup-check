@@ -5,15 +5,32 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2026-09-18
+
+First stable release. The interface this promises to keep compatible is the
+`plugin_check` tool: its options (`target`, `live`, `page`, `sweep`,
+`killStray`) and the shape of the verdict it returns. Everything before this was
+initial development, published as `0.4.x`.
 
 ### Changed
 
 - README (both languages): document that the published package carries a signed
-  provenance attestation, and link the badge to the registry's attestation
-  endpoint.
+  provenance attestation, with the provenance badge linking to the registry's
+  attestation endpoint for the current release.
+- Publishing is now fully automated: a `v*` tag publishes through npm trusted
+  publishing (OIDC) and opens the matching GitHub Release, so the npm version,
+  the git tag and the release page stay in step.
+
+### Notes
+
+- `0.4.0` was published from a maintainer's machine because the very first
+  publish cannot be done by CI — trusted publishing can only authenticate a
+  package that already exists. `0.4.3` was the first CI release, and the first
+  to carry a provenance attestation.
 
 ## [0.4.3] - 2026-09-18
+
+*Pre-1.0 development release.*
 
 First release published by CI, and the first with a signed provenance
 attestation. `plugin_check` itself is unchanged — everything in this release is
@@ -39,6 +56,9 @@ about how the package is produced and shipped.
   runs Node 24 and asserts the npm version before publishing.
 
 ## [0.4.0] - 2026-09-17
+
+*Pre-1.0 development release. Also the first publish, done by hand: CI cannot
+create a package that does not exist yet.*
 
 First public release. Before this, the plugin lived only inside a private
 harness profile, so this entry summarizes the state it was published at.

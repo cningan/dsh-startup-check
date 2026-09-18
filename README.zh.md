@@ -10,7 +10,7 @@
 
 [![CI](https://github.com/cningan/dsh-startup-check/actions/workflows/ci.yml/badge.svg)](https://github.com/cningan/dsh-startup-check/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/dsh-startup-check?color=3fb950&label=npm)](https://www.npmjs.com/package/dsh-startup-check)
-[![provenance](https://img.shields.io/badge/provenance-signed-3fb950)](https://registry.npmjs.org/-/npm/v1/attestations/dsh-startup-check@0.4.3)
+[![provenance](https://img.shields.io/badge/provenance-signed-3fb950)](https://www.npmjs.com/package/dsh-startup-check)
 [![node](https://img.shields.io/badge/node-%E2%89%A522-3fb950)](package.json)
 [![platform](https://img.shields.io/badge/platform-Windows-0078d4)](#环境要求)
 [![license](https://img.shields.io/badge/license-MIT-3fb950)](LICENSE)
@@ -92,8 +92,11 @@ dsh plugin --profile web add dsh-startup-check
 这也是你最后一次信仰之跃。
 
 npm 上的包由 GitHub Actions 发布，并带**签名存证**（provenance）：任何拿到包的人都能核验
-「它确实是从这个仓库、这段提交构建出来的」，而不是某台机器上手打上去的。核验入口见徽章，
-或直接读 [attestation](https://registry.npmjs.org/-/npm/v1/attestations/dsh-startup-check@0.4.3)。
+「它确实是从这个仓库、这段提交构建出来的」，而不是某台机器上手打上去的：
+
+```bash
+npm view dsh-startup-check dist.attestations
+```
 
 ```bash
 plugin_check                          # 静态检查（快）
